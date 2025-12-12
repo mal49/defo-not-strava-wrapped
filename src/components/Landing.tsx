@@ -1,9 +1,11 @@
 import { motion } from 'framer-motion';
 import { getAuthUrl } from '../services/stravaApi';
 import { useState } from 'react';
+import { FileUpload } from './FileUpload';
 
 export function Landing() {
   const [isLoading, setIsLoading] = useState(false);
+  const [showFileUpload, setShowFileUpload] = useState(false);
 
   const handleConnect = async () => {
     setIsLoading(true);
@@ -15,6 +17,11 @@ export function Landing() {
       setIsLoading(false);
     }
   };
+
+  // Show file upload screen
+  if (showFileUpload) {
+    return <FileUpload onBack={() => setShowFileUpload(false)} />;
+  }
 
   return (
     <div className="slide-container relative overflow-hidden bg-zinc-900">
@@ -70,7 +77,7 @@ export function Landing() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="my-12 space-y-4"
+          className="my-10 space-y-3"
         >
           {[
             { emoji: '📊', text: 'Total distance & time' },
@@ -92,16 +99,18 @@ export function Landing() {
           ))}
         </motion.div>
 
-        {/* Connect Button */}
+        {/* Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
+          className="w-full space-y-3"
         >
+          {/* Connect with Strava button */}
           <button
             onClick={handleConnect}
             disabled={isLoading}
-            className="btn-primary w-full max-w-xs flex items-center justify-center gap-3 disabled:opacity-50"
+            className="btn-primary w-full max-w-xs mx-auto flex items-center justify-center gap-3 disabled:opacity-50"
           >
             {isLoading ? (
               <>
@@ -116,6 +125,24 @@ export function Landing() {
                 Connect with Strava
               </>
             )}
+          </button>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 max-w-xs mx-auto">
+            <div className="flex-1 h-px bg-white/10" />
+            <span className="text-white/30 text-xs">or</span>
+            <div className="flex-1 h-px bg-white/10" />
+          </div>
+
+          {/* Upload file button */}
+          <button
+            onClick={() => setShowFileUpload(true)}
+            className="w-full max-w-xs mx-auto flex items-center justify-center gap-3 px-6 py-3 rounded-xl
+                       bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20
+                       text-white/80 hover:text-white transition-all duration-200"
+          >
+            <span className="text-xl">📁</span>
+            Upload Strava Export
           </button>
         </motion.div>
 
@@ -132,4 +159,3 @@ export function Landing() {
     </div>
   );
 }
-

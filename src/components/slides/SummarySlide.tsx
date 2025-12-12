@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { SlideWrapper } from './SlideWrapper';
-import { Download, Share2 } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toPng } from 'html-to-image';
 import type { WrappedStats } from '../../types/strava';
@@ -25,48 +25,38 @@ export function SummarySlide({ stats, year, athleteName, profilePicture }: Summa
     
     setIsDownloading(true);
     try {
-      const dataUrl = await toPng(cardRef.current, {
+      // Clone the element to avoid modifying the original
+      const element = cardRef.current;
+      
+      const dataUrl = await toPng(element, {
         quality: 1,
-        pixelRatio: 2,
-        backgroundColor: '#0d0d0d',
+        pixelRatio: 3,
+        backgroundColor: '#18181b',
+        cacheBust: true,
+        style: {
+          transform: 'scale(1)',
+          transformOrigin: 'top left',
+        },
+        filter: (node) => {
+          // Skip images that might cause CORS issues
+          if (node instanceof HTMLImageElement) {
+            return false;
+          }
+          return true;
+        },
       });
       
       const link = document.createElement('a');
       link.download = `strava-wrapped-${year}.png`;
       link.href = dataUrl;
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error('Failed to download:', error);
+      alert('Failed to save image. Please try again or take a screenshot instead.');
     } finally {
       setIsDownloading(false);
-    }
-  };
-
-  const handleShare = async () => {
-    if (!cardRef.current) return;
-    
-    try {
-      const dataUrl = await toPng(cardRef.current, {
-        quality: 1,
-        pixelRatio: 2,
-        backgroundColor: '#0d0d0d',
-      });
-      
-      const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], `strava-wrapped-${year}.png`, { type: 'image/png' });
-      
-      if (navigator.share && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          title: `My ${year} Strava Wrapped`,
-          text: `Check out my ${year} fitness journey! 🏃‍♂️`,
-          files: [file],
-        });
-      } else {
-        // Fallback to download
-        handleDownload();
-      }
-    } catch (error) {
-      console.error('Failed to share:', error);
     }
   };
 
@@ -77,7 +67,7 @@ export function SummarySlide({ stats, year, athleteName, profilePicture }: Summa
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm">
+      <div className="relative z-10 w-full max-w-sm flex flex-col items-center">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,12 +79,15 @@ export function SummarySlide({ stats, year, athleteName, profilePicture }: Summa
 
         {/* Shareable Card */}
         <motion.div
-          ref={cardRef}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="bg-gradient-to-br from-zinc-800 to-zinc-900 rounded-3xl p-6 border border-white/10 shadow-2xl"
+          className="w-full"
         >
+          <div
+            ref={cardRef}
+            className="bg-zinc-800/90 rounded-3xl p-6 border border-white/10 shadow-2xl backdrop-blur-sm"
+          >
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -171,36 +164,30 @@ export function SummarySlide({ stats, year, athleteName, profilePicture }: Summa
               ))}
             </div>
           </div>
+          </div>
         </motion.div>
 
-        {/* Action buttons */}
+        {/* Save button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
-          className="flex gap-4 mt-6 justify-center"
+          className="mt-8"
         >
           <button
             onClick={handleDownload}
             disabled={isDownloading}
-            className="btn-primary flex items-center gap-2 px-6"
+            className="btn-primary flex items-center gap-2 px-8 py-3"
           >
             <Download className="w-5 h-5" />
-            {isDownloading ? 'Saving...' : 'Save'}
-          </button>
-          <button
-            onClick={handleShare}
-            className="btn-primary flex items-center gap-2 px-6 bg-white/10 hover:bg-white/20"
-          >
-            <Share2 className="w-5 h-5" />
-            Share
+            {isDownloading ? 'Saving...' : 'Save Image'}
           </button>
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 1 }}
           className="text-white/40 text-sm text-center mt-6"
         >
           Thanks for an amazing year! 🎉

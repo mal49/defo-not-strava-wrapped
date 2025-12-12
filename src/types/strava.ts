@@ -90,5 +90,6 @@ export interface WrappedStats {
   };
   topLocations: LocationStats[];
   topRoutes: RouteData[]; // Top activities with route data
+  allPolylines: string[]; // All route polylines for heatmap
 }
 

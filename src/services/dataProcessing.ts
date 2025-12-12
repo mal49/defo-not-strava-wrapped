@@ -22,6 +22,7 @@ export function processActivities(activities: StravaActivity[]): WrappedStats {
       },
       topLocations: [],
       topRoutes: [],
+      allPolylines: [],
     };
   }
 
@@ -86,6 +87,11 @@ export function processActivities(activities: StravaActivity[]): WrappedStats {
 
   // Get top routes (activities with polyline data, sorted by distance)
   const topRoutes = processRoutes(activities);
+  
+  // Get all polylines for heatmap
+  const allPolylines = activities
+    .filter(a => a.map?.summary_polyline && a.map.summary_polyline.length > 0)
+    .map(a => a.map!.summary_polyline);
 
   return {
     totalDistance,
@@ -102,6 +108,7 @@ export function processActivities(activities: StravaActivity[]): WrappedStats {
     personalBests,
     topLocations,
     topRoutes,
+    allPolylines,
   };
 }
 
