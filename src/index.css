@@ -1,0 +1,187 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Clash Display", "SF Pro Display", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  
+  --color-strava-orange: #fc4c02;
+  --color-strava-orange-light: #ff6b35;
+  --color-strava-dark: #0d0d0d;
+  --color-strava-darker: #050505;
+  --color-strava-gray: #1a1a1a;
+  --color-strava-light-gray: #2a2a2a;
+  --color-accent-coral: #ff7f6e;
+  --color-accent-yellow: #ffd93d;
+  --color-accent-teal: #00d4aa;
+  --color-accent-purple: #a855f7;
+  --color-accent-blue: #3b82f6;
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-body);
+    background-color: var(--color-strava-darker);
+    color: white;
+    overflow-x: hidden;
+  }
+
+  body {
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+@layer components {
+  .slide-container {
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .story-wrapper {
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .gradient-orange {
+    background: linear-gradient(135deg, var(--color-strava-orange) 0%, var(--color-accent-coral) 100%);
+  }
+
+  .gradient-dark {
+    background: linear-gradient(180deg, var(--color-strava-dark) 0%, var(--color-strava-darker) 100%);
+  }
+
+  .gradient-teal {
+    background: linear-gradient(135deg, var(--color-accent-teal) 0%, #00a896 100%);
+  }
+
+  .gradient-purple {
+    background: linear-gradient(135deg, var(--color-accent-purple) 0%, #7c3aed 100%);
+  }
+
+  .gradient-blue {
+    background: linear-gradient(135deg, var(--color-accent-blue) 0%, #1d4ed8 100%);
+  }
+
+  .text-gradient-orange {
+    background: linear-gradient(135deg, var(--color-strava-orange) 0%, var(--color-accent-coral) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+  }
+
+  .progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .progress-dot.active {
+    background: white;
+    width: 24px;
+    border-radius: 4px;
+  }
+
+  .btn-primary {
+    background: var(--color-strava-orange);
+    color: white;
+    font-weight: 600;
+    padding: 16px 32px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 16px;
+  }
+
+  .btn-primary:hover {
+    background: var(--color-strava-orange-light);
+    transform: scale(1.02);
+  }
+
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+}
+
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Leaflet map customization */
+.leaflet-container {
+  background: #1a1a1a !important;
+  font-family: var(--font-body);
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(30, 30, 40, 0.95);
+  color: white;
+  border-radius: 12px;
+  border: 1px solid rgba(252, 76, 2, 0.3);
+}
+
+.leaflet-popup-tip {
+  background: rgba(30, 30, 40, 0.95);
+}
+
+.leaflet-popup-content {
+  margin: 10px 14px;
+  color: white;
+}
+
+.leaflet-popup-close-button {
+  color: white !important;
+}
+
+/* Make routes glow */
+.leaflet-overlay-pane svg path {
+  filter: drop-shadow(0 0 3px currentColor);
+}
