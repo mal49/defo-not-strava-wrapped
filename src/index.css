@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -59,26 +60,6 @@
     max-width: 430px;
     margin: 0 auto;
     position: relative;
-  }
-
-  .gradient-orange {
-    background: linear-gradient(135deg, var(--color-strava-orange) 0%, var(--color-accent-coral) 100%);
-  }
-
-  .gradient-dark {
-    background: linear-gradient(180deg, var(--color-strava-dark) 0%, var(--color-strava-darker) 100%);
-  }
-
-  .gradient-teal {
-    background: linear-gradient(135deg, var(--color-accent-teal) 0%, #00a896 100%);
-  }
-
-  .gradient-purple {
-    background: linear-gradient(135deg, var(--color-accent-purple) 0%, #7c3aed 100%);
-  }
-
-  .gradient-blue {
-    background: linear-gradient(135deg, var(--color-accent-blue) 0%, #1d4ed8 100%);
   }
 
   .text-gradient-orange {
@@ -151,9 +132,6 @@
   background: rgba(255, 255, 255, 0.2);
   border-radius: 2px;
 }
-
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* Leaflet map customization */
 .leaflet-container {

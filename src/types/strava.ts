@@ -38,15 +38,6 @@ export interface StravaActivity {
   };
 }
 
-export interface LocationStats {
-  city: string;
-  country: string;
-  count: number;
-  totalDistance: number; // km
-  lat: number;
-  lng: number;
-}
-
 export interface StravaTokenResponse {
   token_type: string;
   expires_at: number;
@@ -61,7 +52,6 @@ export interface RouteData {
   name: string;
   distance: number;
   type: string;
-  count?: number; // Number of times user ran in this area
 }
 
 export interface WrappedStats {
@@ -71,26 +61,8 @@ export interface WrappedStats {
   totalActivities: number;
   totalKudos: number;
   longestActivity: StravaActivity | null;
-  fastestActivity: StravaActivity | null;
   activityTypes: Record<string, number>;
   monthlyDistribution: Record<string, number>;
-  averagePerActivity: {
-    distance: number;
-    time: number;
-    elevation: number;
-  };
-  streaks: {
-    longestStreak: number;
-    currentStreak: number;
-  };
-  personalBests: {
-    longestDistance: number;
-    longestTime: number;
-    highestElevation: number;
-    mostKudos: number;
-  };
-  topLocations: LocationStats[];
-  topRoutes: RouteData[]; // Top activities with route data
-  allPolylines: string[]; // All route polylines for heatmap
+  topRoutes: RouteData[];
 }
 

@@ -54,8 +54,18 @@ export function Landing() {
           transition={{ type: 'spring', stiffness: 100, delay: 0.2 }}
           className="mb-8"
         >
-          <div className="w-24 h-24 mx-auto rounded-3xl gradient-orange flex items-center justify-center shadow-2xl shadow-orange-500/30">
-            <span className="text-5xl">🏃</span>
+          <div className="relative w-28 h-28 mx-auto">
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500 via-orange-600 to-red-500 rounded-3xl blur-xl opacity-60 animate-pulse" />
+            {/* Main logo container */}
+            <div className="relative w-full h-full rounded-3xl bg-gradient-to-br from-orange-500 via-orange-600 to-red-600 flex items-center justify-center shadow-2xl shadow-orange-500/40 overflow-hidden">
+              {/* Shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0" />
+              {/* Strava-style logo mark */}
+              <svg className="w-14 h-14 text-white relative z-10" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
+              </svg>
+            </div>
           </div>
         </motion.div>
 

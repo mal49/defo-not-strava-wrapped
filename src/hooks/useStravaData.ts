@@ -13,11 +13,12 @@ interface UseStravaDataReturn {
   selectedYear: number;
   setSelectedYear: (year: number) => void;
   availableYears: number[];
+  kudosGiven: number | null;
   refetch: () => Promise<void>;
 }
 
 export function useStravaData(): UseStravaDataReturn {
-  const { accessToken, refreshAccessToken, logout, isFileUploadMode, uploadedActivities } = useAuth();
+  const { accessToken, refreshAccessToken, logout, isFileUploadMode, uploadedActivities, kudosGiven } = useAuth();
   const [activities, setActivities] = useState<StravaActivity[]>([]);
   const [stats, setStats] = useState<WrappedStats | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -122,6 +123,7 @@ export function useStravaData(): UseStravaDataReturn {
     selectedYear,
     setSelectedYear,
     availableYears,
+    kudosGiven,
     refetch: fetchData,
   };
 }

@@ -12,7 +12,8 @@ interface AuthContextType {
   // File upload mode
   isFileUploadMode: boolean;
   uploadedActivities: StravaActivity[] | null;
-  loginWithFileUpload: (activities: StravaActivity[], athlete: StravaAthlete) => void;
+  kudosGiven: number | null;
+  loginWithFileUpload: (activities: StravaActivity[], athlete: StravaAthlete, kudosGiven?: number) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -30,6 +31,7 @@ interface StoredAuth {
 interface StoredFileUpload {
   activities: StravaActivity[];
   athlete: StravaAthlete;
+  kudosGiven?: number;
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -41,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // File upload mode state
   const [isFileUploadMode, setIsFileUploadMode] = useState(false);
   const [uploadedActivities, setUploadedActivities] = useState<StravaActivity[] | null>(null);
+  const [kudosGiven, setKudosGiven] = useState<number | null>(null);
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -51,6 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const data: StoredFileUpload = JSON.parse(fileUploadStored);
         setUploadedActivities(data.activities);
         setAthlete(data.athlete);
+        setKudosGiven(data.kudosGiven || null);
         setIsFileUploadMode(true);
         return; // Don't check for API auth if file upload mode
       } catch {
@@ -106,7 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stored));
   };
 
-  const loginWithFileUpload = (activities: StravaActivity[], athleteData: StravaAthlete) => {
+  const loginWithFileUpload = (activities: StravaActivity[], athleteData: StravaAthlete, kudosGivenCount?: number) => {
     // Clear any API auth data when using file upload
     setAccessToken(null);
     setRefreshTokenValue(null);
@@ -115,11 +119,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setUploadedActivities(activities);
     setAthlete(athleteData);
+    setKudosGiven(kudosGivenCount || null);
     setIsFileUploadMode(true);
 
     const stored: StoredFileUpload = {
       activities,
       athlete: athleteData,
+      kudosGiven: kudosGivenCount,
     };
     localStorage.setItem(FILE_UPLOAD_KEY, JSON.stringify(stored));
   };
@@ -131,6 +137,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAthlete(null);
     setIsFileUploadMode(false);
     setUploadedActivities(null);
+    setKudosGiven(null);
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(FILE_UPLOAD_KEY);
   };
@@ -158,6 +165,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         refreshAccessToken,
         isFileUploadMode,
         uploadedActivities,
+        kudosGiven,
         loginWithFileUpload,
       }}
     >

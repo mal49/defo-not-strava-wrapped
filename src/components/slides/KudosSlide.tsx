@@ -6,30 +6,52 @@ import { Heart } from 'lucide-react';
 interface KudosSlideProps {
   totalKudos: number;
   totalActivities: number;
+  isKudosGiven?: boolean;
 }
 
-export function KudosSlide({ totalKudos, totalActivities }: KudosSlideProps) {
+export function KudosSlide({ totalKudos, totalActivities, isKudosGiven = false }: KudosSlideProps) {
   const avgKudos = totalActivities > 0 ? (totalKudos / totalActivities).toFixed(1) : '0';
 
-  // Fun kudos messages
+  // Fun kudos messages - different for given vs received
   let kudosMessage = '';
   let kudosEmoji = '';
 
-  if (totalKudos >= 1000) {
-    kudosMessage = "You're basically famous!";
-    kudosEmoji = '🌟';
-  } else if (totalKudos >= 500) {
-    kudosMessage = 'Community favorite!';
-    kudosEmoji = '❤️‍🔥';
-  } else if (totalKudos >= 200) {
-    kudosMessage = 'The love is real!';
-    kudosEmoji = '💕';
-  } else if (totalKudos >= 50) {
-    kudosMessage = 'Your friends support you!';
-    kudosEmoji = '👏';
+  if (isKudosGiven) {
+    // Messages for kudos given
+    if (totalKudos >= 1000) {
+      kudosMessage = "You're the ultimate hype person!";
+      kudosEmoji = '🎉';
+    } else if (totalKudos >= 500) {
+      kudosMessage = 'Community champion!';
+      kudosEmoji = '🏆';
+    } else if (totalKudos >= 200) {
+      kudosMessage = 'Spreading the love!';
+      kudosEmoji = '💕';
+    } else if (totalKudos >= 50) {
+      kudosMessage = 'Great supporter!';
+      kudosEmoji = '👏';
+    } else {
+      kudosMessage = 'Every kudos counts!';
+      kudosEmoji = '💪';
+    }
   } else {
-    kudosMessage = 'Quality over quantity!';
-    kudosEmoji = '💪';
+    // Messages for kudos received
+    if (totalKudos >= 1000) {
+      kudosMessage = "You're basically famous!";
+      kudosEmoji = '🌟';
+    } else if (totalKudos >= 500) {
+      kudosMessage = 'Community favorite!';
+      kudosEmoji = '❤️‍🔥';
+    } else if (totalKudos >= 200) {
+      kudosMessage = 'The love is real!';
+      kudosEmoji = '💕';
+    } else if (totalKudos >= 50) {
+      kudosMessage = 'Your friends support you!';
+      kudosEmoji = '👏';
+    } else {
+      kudosMessage = 'Quality over quantity!';
+      kudosEmoji = '💪';
+    }
   }
 
   return (
@@ -75,7 +97,7 @@ export function KudosSlide({ totalKudos, totalActivities }: KudosSlideProps) {
           transition={{ delay: 0.4 }}
           className="text-white/80 text-lg mb-2 uppercase tracking-wider"
         >
-          You received
+          {isKudosGiven ? 'You gave' : 'You received'}
         </motion.p>
 
         <motion.div
@@ -110,15 +132,17 @@ export function KudosSlide({ totalKudos, totalActivities }: KudosSlideProps) {
           <p className="text-white text-xl font-bold mt-2">{kudosMessage}</p>
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.5 }}
-          className="glass-card px-6 py-4 bg-white/10 inline-block"
-        >
-          <p className="text-white/70 text-sm">Average per activity</p>
-          <p className="text-white text-2xl font-bold">{avgKudos} kudos</p>
-        </motion.div>
+        {!isKudosGiven && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.5 }}
+            className="glass-card px-6 py-4 bg-white/10 inline-block"
+          >
+            <p className="text-white/70 text-sm">Average per activity</p>
+            <p className="text-white text-2xl font-bold">{avgKudos} kudos</p>
+          </motion.div>
+        )}
       </div>
     </SlideWrapper>
   );

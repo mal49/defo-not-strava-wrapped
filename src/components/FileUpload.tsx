@@ -27,14 +27,14 @@ export function FileUpload({ onBack }: FileUploadProps) {
 
     try {
       setProgress('Parsing activities...');
-      const { activities, athlete } = await parseStravaExport(file);
+      const { activities, athlete, totalKudosGiven } = await parseStravaExport(file);
       
       setProgress(`Found ${activities.length} activities!`);
       
       // Small delay to show the success message
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      loginWithFileUpload(activities, athlete);
+      loginWithFileUpload(activities, athlete, totalKudosGiven);
     } catch (err) {
       console.error('Error parsing file:', err);
       setError(err instanceof Error ? err.message : 'Failed to parse the file. Please try again.');

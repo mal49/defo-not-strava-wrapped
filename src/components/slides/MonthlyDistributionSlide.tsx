@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
 import { SlideWrapper } from './SlideWrapper';
+import { MONTHS } from '../../constants';
 
 interface MonthlyDistributionSlideProps {
   distribution: Record<string, number>;
 }
 
 export function MonthlyDistributionSlide({ distribution }: MonthlyDistributionSlideProps) {
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months = MONTHS;
   const maxValue = Math.max(...Object.values(distribution), 1);
   const totalActivities = Object.values(distribution).reduce((sum, val) => sum + val, 0);
   

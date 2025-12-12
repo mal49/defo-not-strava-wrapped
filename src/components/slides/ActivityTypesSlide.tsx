@@ -1,19 +1,11 @@
 import { motion } from 'framer-motion';
 import { SlideWrapper } from './SlideWrapper';
 import { getActivityEmoji } from '../../services/dataProcessing';
+import { CHART_COLORS } from '../../constants';
 
 interface ActivityTypesSlideProps {
   activityTypes: Record<string, number>;
 }
-
-const COLORS = [
-  { main: '#fc4c02', glow: 'rgba(252, 76, 2, 0.4)' },
-  { main: '#00d4aa', glow: 'rgba(0, 212, 170, 0.4)' },
-  { main: '#a855f7', glow: 'rgba(168, 85, 247, 0.4)' },
-  { main: '#3b82f6', glow: 'rgba(59, 130, 246, 0.4)' },
-  { main: '#ffd93d', glow: 'rgba(255, 217, 61, 0.4)' },
-  { main: '#ff7f6e', glow: 'rgba(255, 127, 110, 0.4)' },
-];
 
 export function ActivityTypesSlide({ activityTypes }: ActivityTypesSlideProps) {
   const sortedTypes = Object.entries(activityTypes)
@@ -26,7 +18,7 @@ export function ActivityTypesSlide({ activityTypes }: ActivityTypesSlideProps) {
     name,
     value,
     percentage: ((value / total) * 100).toFixed(1),
-    color: COLORS[index % COLORS.length],
+    color: CHART_COLORS[index % CHART_COLORS.length],
   }));
 
   const topActivity = sortedTypes[0];
@@ -68,7 +60,7 @@ export function ActivityTypesSlide({ activityTypes }: ActivityTypesSlideProps) {
         animate={{ opacity: 0.15 }}
         transition={{ delay: 0.5, duration: 1 }}
         className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-[100px]"
-        style={{ backgroundColor: COLORS[0].main }}
+        style={{ backgroundColor: CHART_COLORS[0].main }}
       />
 
       <div className="relative z-10 w-full max-w-sm">

@@ -8,6 +8,7 @@ export interface ParsedExportData {
   activities: StravaActivity[];
   athlete: StravaAthlete;
   profilePicture?: string;
+  totalKudosGiven?: number;
 }
 
 // Correct column indices based on actual Strava export CSV analysis
@@ -268,6 +269,7 @@ export async function parseStravaExport(file: File): Promise<ParsedExportData> {
   const contents = await zip.loadAsync(file);
 
   let activitiesCSV: string | null = null;
+  let kudosCSV: string | null = null;
   let profilePicture: string | undefined = undefined;
   let athleteFirstName = 'Strava';
   let athleteLastName = 'Athlete';
@@ -277,13 +279,24 @@ export async function parseStravaExport(file: File): Promise<ParsedExportData> {
   const fitFiles = new Map<string, Uint8Array>();
 
   // First pass: collect all files
+  console.log('Files in ZIP:');
   for (const [filename, zipEntry] of Object.entries(contents.files)) {
     if (zipEntry.dir) continue;
+    console.log(' -', filename);
     
     const lowerFilename = filename.toLowerCase();
     
     if (lowerFilename.endsWith('activities.csv')) {
       activitiesCSV = await zipEntry.async('string');
+    }
+    
+    // Look for reactions.csv (could be in social/ folder or root)
+    if (lowerFilename.endsWith('reactions.csv') || 
+        lowerFilename.includes('/reactions.csv') ||
+        lowerFilename.includes('social/reactions') ||
+        (lowerFilename.includes('reaction') && lowerFilename.endsWith('.csv'))) {
+      kudosCSV = await zipEntry.async('string');
+      console.log('Found reactions file:', filename);
     }
     
     if (lowerFilename.endsWith('profile.jpg') || 
@@ -427,6 +440,31 @@ export async function parseStravaExport(file: File): Promise<ParsedExportData> {
     throw new Error('No activities found in the export file.');
   }
 
+  // Parse kudos/reactions data if available
+  // reactions.csv format: Reaction Date, Reaction Type, Parent Type, Parent ID
+  // This file contains kudos YOU GAVE to others (not kudos received)
+  let totalKudosGiven = 0;
+  
+  if (kudosCSV) {
+    const kudosRows = parseCSV(kudosCSV);
+    console.log('Reactions CSV rows:', kudosRows.length);
+    
+    // Skip header row and count all Kudos reactions
+    for (let i = 1; i < kudosRows.length; i++) {
+      const row = kudosRows[i];
+      if (row.length >= 2) {
+        const reactionType = row[1]?.trim();
+        if (reactionType === 'Kudos') {
+          totalKudosGiven++;
+        }
+      }
+    }
+    
+    console.log('Total kudos given:', totalKudosGiven);
+  } else {
+    console.log('No reactions.csv found in the export');
+  }
+
   const athlete: StravaAthlete = {
     id: Date.now(),
     username: 'athlete',
@@ -440,6 +478,7 @@ export async function parseStravaExport(file: File): Promise<ParsedExportData> {
     activities,
     athlete,
     profilePicture,
+    totalKudosGiven: totalKudosGiven > 0 ? totalKudosGiven : undefined,
   };
 }
 

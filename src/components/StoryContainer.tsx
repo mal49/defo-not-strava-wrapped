@@ -19,7 +19,7 @@ import { Loader2, ChevronLeft, LogOut } from 'lucide-react';
 
 export function StoryContainer() {
   const { athlete, logout } = useAuth();
-  const { stats, isLoading, error, selectedYear, setSelectedYear, availableYears } = useStravaData();
+  const { stats, isLoading, error, selectedYear, setSelectedYear, availableYears, kudosGiven } = useStravaData();
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const athleteName = athlete ? `${athlete.firstname}` : 'Athlete';
@@ -36,7 +36,7 @@ export function StoryContainer() {
     Object.keys(stats.monthlyDistribution).length > 0 && <MonthlyDistributionSlide key="monthly" distribution={stats.monthlyDistribution} />,
     Object.keys(stats.activityTypes).length > 0 && <ActivityTypesSlide key="types" activityTypes={stats.activityTypes} />,
     stats.topRoutes.length > 0 && <LocationsSlide key="locations" routes={stats.topRoutes} />,
-    stats.totalKudos > 0 && <KudosSlide key="kudos" totalKudos={stats.totalKudos} totalActivities={stats.totalActivities} />,
+    (kudosGiven || stats.totalKudos > 0) && <KudosSlide key="kudos" totalKudos={kudosGiven || stats.totalKudos} totalActivities={stats.totalActivities} isKudosGiven={!!kudosGiven} />,
     <SummarySlide key="summary" stats={stats} year={selectedYear} athleteName={athleteName} profilePicture={profilePicture} />,
   ].filter(Boolean) : [];
 

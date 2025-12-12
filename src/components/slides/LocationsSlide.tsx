@@ -5,6 +5,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Polyline, useMap } from 'react-leaflet';
 import polyline from '@mapbox/polyline';
 import type { RouteData } from '../../types/strava';
+import { ROUTE_COLORS } from '../../constants';
 import 'leaflet/dist/leaflet.css';
 
 interface LocationsSlideProps {
@@ -24,20 +25,6 @@ function FitBounds({ decodedRoutes }: { decodedRoutes: [number, number][][] }) {
   
   return null;
 }
-
-// Route colors - Strava orange theme
-const routeColors = [
-  '#fc4c02', // Strava orange (main route)
-  '#ff7f6e', // Coral
-  '#ffd93d', // Yellow
-  '#00d4aa', // Teal
-  '#a855f7', // Purple
-  '#3b82f6', // Blue
-  '#f472b6', // Pink
-  '#84cc16', // Lime
-  '#06b6d4', // Cyan
-  '#f97316', // Orange
-];
 
 export function LocationsSlide({ routes }: LocationsSlideProps) {
   const [mapReady, setMapReady] = useState(false);
@@ -140,7 +127,7 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
                   key={i}
                   positions={route}
                   pathOptions={{
-                    color: routeColors[i % routeColors.length],
+                    color: ROUTE_COLORS[i % ROUTE_COLORS.length],
                     weight: i === 0 ? 4 : 3,
                     opacity: i === 0 ? 1 : 0.7,
                     lineCap: 'round',
@@ -174,7 +161,7 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: routeColors[i + 1] }}
+                    style={{ backgroundColor: ROUTE_COLORS[i + 1] }}
                   />
                   <p className="text-white text-sm font-medium truncate max-w-[180px]">
                     {route.name}

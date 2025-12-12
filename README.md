@@ -3,9 +3,10 @@
 Your year in motion — A beautiful Spotify Wrapped-style visualization of your Strava activities.
 
 ![Strava Wrapped](https://img.shields.io/badge/Strava-FC4C02?style=for-the-badge&logo=strava&logoColor=white)
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7.2-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
 ## 📖 Overview
 
@@ -31,9 +32,10 @@ Strava Wrapped transforms your yearly Strava activity data into an engaging, sto
 |---------|-------------|
 | 📊 **Total Stats** | Distance, time, elevation gain, and activity count |
 | 🏆 **Personal Highlights** | Your longest activity and top achievements |
-| 📅 **Monthly Breakdown** | Visualize your most active months |
+| 📅 **Monthly Breakdown** | Interactive chart visualizing your most active months |
 | 🎯 **Activity Types** | Breakdown of all your sports (running, cycling, swimming, etc.) |
-| 🗺️ **Locations Heatmap** | Heat map visualization of where you've been most active |
+| 🗺️ **Route of the Year** | Interactive map showing your longest routes with polyline visualization |
+| ⛰️ **Elevation Stats** | Total elevation gain throughout the year |
 | 👏 **Kudos Count** | Total love received from the Strava community |
 | 📱 **Shareable Summary** | Download and share your wrapped card |
 | 📁 **Offline Mode** | Upload your Strava export ZIP for complete privacy |
@@ -42,14 +44,15 @@ Strava Wrapped transforms your yearly Strava activity data into an engaging, sto
 
 | Layer | Technologies |
 |-------|-------------|
-| **Frontend** | React 19, TypeScript, Vite 7, Tailwind CSS 4 |
-| **Animations** | Framer Motion |
-| **Charts** | Recharts |
-| **Maps** | Leaflet, React-Leaflet, Leaflet.heat |
+| **Frontend** | React 19.2, TypeScript 5.9, Vite 7.2, Tailwind CSS 4.1 |
+| **Animations** | Framer Motion 12 |
+| **Charts** | Recharts 3.5 |
+| **Maps** | Leaflet 1.9, React-Leaflet 5.0, Mapbox Polyline |
+| **Routing** | React Router DOM 7.10 |
 | **Backend** | Express.js (Node.js) |
-| **File Parsing** | JSZip, FIT File Parser, Pako |
+| **File Parsing** | JSZip 3.10, FIT File Parser 2.0, Pako 2.1 |
 | **Image Export** | html-to-image |
-| **Icons** | Lucide React |
+| **Icons** | Lucide React
 
 ## 📋 Prerequisites
 
@@ -184,13 +187,30 @@ strava-wrapped/
 ├── src/                    # Frontend source code
 │   ├── components/         # React components
 │   │   ├── slides/         # Individual slide components
+│   │   │   ├── IntroSlide.tsx           # Welcome/intro slide
+│   │   │   ├── TotalDistanceSlide.tsx   # Total distance stats
+│   │   │   ├── TotalTimeSlide.tsx       # Total time stats
+│   │   │   ├── ActivityCountSlide.tsx   # Activity count
+│   │   │   ├── ActivityTypesSlide.tsx   # Sports breakdown
+│   │   │   ├── MonthlyDistributionSlide.tsx  # Monthly chart
+│   │   │   ├── ElevationSlide.tsx       # Elevation stats
+│   │   │   ├── LongestActivitySlide.tsx # Longest activity
+│   │   │   ├── LocationsSlide.tsx       # Route map
+│   │   │   ├── KudosSlide.tsx           # Kudos count
+│   │   │   ├── SummarySlide.tsx         # Final summary
+│   │   │   └── SlideWrapper.tsx         # Slide container
 │   │   ├── ui/             # Reusable UI components
-│   │   ├── FileUpload.tsx  # File upload component
-│   │   └── Landing.tsx     # Landing page with auth options
+│   │   │   ├── AnimatedNumber.tsx       # Animated counters
+│   │   │   ├── ProgressIndicator.tsx    # Story progress bar
+│   │   │   └── YearPicker.tsx           # Year selection
+│   │   ├── StoryContainer.tsx  # Main story/slideshow container
+│   │   ├── FileUpload.tsx      # File upload component
+│   │   ├── Callback.tsx        # OAuth callback handler
+│   │   └── Landing.tsx         # Landing page with auth options
 │   ├── context/            # React context (Auth)
 │   ├── hooks/              # Custom React hooks
 │   ├── services/           # API services & data processing
-│   │   ├── stravaApi.ts    # Strava API service
+│   │   ├── stravaApi.ts           # Strava API service
 │   │   ├── stravaExportParser.ts  # ZIP file parser
 │   │   └── dataProcessing.ts      # Data transformation
 │   └── types/              # TypeScript type definitions
@@ -198,6 +218,7 @@ strava-wrapped/
 │   ├── index.js            # Server entry point
 │   └── env.example         # Environment variables template
 ├── functions/              # Cloudflare Pages functions (for deployment)
+│   └── api/auth/           # OAuth endpoints (url, token, refresh)
 ├── public/                 # Static assets
 └── dist/                   # Production build output
 ```
@@ -258,9 +279,27 @@ Your data stays private:
 
 MIT License - feel free to use this project for personal or commercial purposes.
 
+## 🎨 Slides Preview
+
+The app includes the following animated slides:
+
+1. **Intro** — Welcome screen with year selection
+2. **Total Distance** — Your total kilometers/miles covered
+3. **Total Time** — Hours spent being active
+4. **Activity Count** — Number of activities recorded
+5. **Activity Types** — Breakdown by sport type (run, ride, swim, etc.)
+6. **Monthly Distribution** — Interactive bar chart of monthly activity
+7. **Elevation** — Total elevation gain
+8. **Longest Activity** — Your single longest effort
+9. **Locations** — Interactive map with your top routes
+10. **Kudos** — Community engagement stats
+11. **Summary** — Shareable recap card
+
 ## 🙏 Acknowledgments
 
 - [Strava API](https://developers.strava.com/) for providing activity data
 - Inspired by [Spotify Wrapped](https://www.spotify.com/wrapped/)
-- [Leaflet](https://leafletjs.com/) for map visualization
+- [Leaflet](https://leafletjs.com/) & [React-Leaflet](https://react-leaflet.js.org/) for map visualization
 - [Framer Motion](https://www.framer.com/motion/) for smooth animations
+- [Recharts](https://recharts.org/) for beautiful charts
+- [Lucide](https://lucide.dev/) for icons
