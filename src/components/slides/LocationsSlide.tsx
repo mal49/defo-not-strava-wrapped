@@ -11,16 +11,14 @@ interface LocationsSlideProps {
   routes: RouteData[];
 }
 
-// Component to fit map bounds to all routes
+// Component to fit map bounds to the first (longest) route
 function FitBounds({ decodedRoutes }: { decodedRoutes: [number, number][][] }) {
   const map = useMap();
   
   useEffect(() => {
-    if (decodedRoutes.length > 0) {
-      const allPoints = decodedRoutes.flat();
-      if (allPoints.length > 0) {
-        map.fitBounds(allPoints, { padding: [20, 20] });
-      }
+    if (decodedRoutes.length > 0 && decodedRoutes[0].length > 0) {
+      // Zoom to the first (longest) route only
+      map.fitBounds(decodedRoutes[0], { padding: [30, 30] });
     }
   }, [decodedRoutes, map]);
   
@@ -97,9 +95,27 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="text-white/80 text-sm mb-3 uppercase tracking-wider"
+          className="text-white/80 text-sm mb-1 uppercase tracking-wider"
         >
-          Your routes this year
+          Route of the Year
+        </motion.p>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
+          className="text-white text-xl font-bold mb-1"
+        >
+          {routes[0]?.name}
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="text-orange-400 text-lg font-semibold mb-3"
+        >
+          {routes[0]?.distance.toFixed(1)} km
         </motion.p>
 
         {/* Map with Routes */}
@@ -142,29 +158,8 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
           </motion.div>
         )}
 
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6 }}
-          className="glass-card px-5 py-4 bg-orange-500/10 border border-orange-500/20 mb-3"
-        >
-          <p className="text-white/60 text-xs mb-1">Routes mapped</p>
-          <div className="flex items-center justify-center gap-6">
-            <div>
-              <span className="text-orange-500 font-bold text-2xl">{routes.length}</span>
-              <span className="text-white/60 ml-1 text-sm">routes</span>
-            </div>
-            <div className="w-px h-6 bg-white/20" />
-            <div>
-              <span className="text-orange-500 font-bold text-2xl">{totalDistance.toFixed(0)}</span>
-              <span className="text-white/60 ml-1 text-sm">km</span>
-            </div>
-          </div>
-        </motion.div>
-
         {/* Top routes list */}
-        {routes.length > 0 && (
+        {routes.length > 1 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -172,9 +167,9 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
             className="space-y-1.5"
           >
             <p className="text-white/50 text-xs uppercase tracking-wider mb-2">
-              Longest routes
+              Other long routes
             </p>
-            {routes.slice(0, 3).map((route, i) => (
+            {routes.slice(1, 4).map((route, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, x: -20 }}
@@ -185,7 +180,7 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
                 <div className="flex items-center gap-2">
                   <div 
                     className="w-3 h-3 rounded-full" 
-                    style={{ backgroundColor: routeColors[i] }}
+                    style={{ backgroundColor: routeColors[i + 1] }}
                   />
                   <p className="text-white text-sm font-medium truncate max-w-[180px]">
                     {route.name}

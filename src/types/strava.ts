@@ -61,6 +61,7 @@ export interface RouteData {
   name: string;
   distance: number;
   type: string;
+  count?: number; // Number of times user ran in this area
 }
 
 export interface WrappedStats {

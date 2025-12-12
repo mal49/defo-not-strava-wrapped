@@ -9,14 +9,21 @@ Your year in motion — A beautiful Spotify Wrapped-style visualization of your 
 
 ## 📖 Overview
 
-Strava Wrapped transforms your yearly Strava activity data into an engaging, story-based presentation — similar to Spotify Wrapped. Connect your Strava account, select a year, and watch your fitness journey come to life through animated slides showcasing your achievements, stats, and highlights.
+Strava Wrapped transforms your yearly Strava activity data into an engaging, story-based presentation — similar to Spotify Wrapped. Connect your Strava account or upload your data export, select a year, and watch your fitness journey come to life through animated slides showcasing your achievements, stats, and highlights.
 
 ### How It Works
 
+**Option 1: Connect with Strava (Online)**
 1. **Authenticate** with your Strava account via OAuth 2.0
 2. **Select a year** to view your wrapped summary
 3. **Swipe through slides** featuring your personalized stats
 4. **Download & share** your summary card with friends
+
+**Option 2: Upload Strava Export (Offline)**
+1. **Download** your data archive from Strava settings
+2. **Upload** the ZIP file directly to the app
+3. **View your wrapped** without needing API access
+4. **Full privacy** — all processing happens locally in your browser
 
 ## ✨ Features
 
@@ -26,20 +33,23 @@ Strava Wrapped transforms your yearly Strava activity data into an engaging, sto
 | 🏆 **Personal Highlights** | Your longest activity and top achievements |
 | 📅 **Monthly Breakdown** | Visualize your most active months |
 | 🎯 **Activity Types** | Breakdown of all your sports (running, cycling, swimming, etc.) |
-| 🗺️ **Locations** | Map visualization of where you've been active |
+| 🗺️ **Locations Heatmap** | Heat map visualization of where you've been most active |
 | 👏 **Kudos Count** | Total love received from the Strava community |
 | 📱 **Shareable Summary** | Download and share your wrapped card |
+| 📁 **Offline Mode** | Upload your Strava export ZIP for complete privacy |
 
 ## 🛠️ Tech Stack
 
 | Layer | Technologies |
 |-------|-------------|
-| **Frontend** | React 19, TypeScript, Vite, Tailwind CSS 4 |
+| **Frontend** | React 19, TypeScript, Vite 7, Tailwind CSS 4 |
 | **Animations** | Framer Motion |
 | **Charts** | Recharts |
-| **Maps** | Leaflet, React-Leaflet |
+| **Maps** | Leaflet, React-Leaflet, Leaflet.heat |
 | **Backend** | Express.js (Node.js) |
+| **File Parsing** | JSZip, FIT File Parser, Pako |
 | **Image Export** | html-to-image |
+| **Icons** | Lucide React |
 
 ## 📋 Prerequisites
 
@@ -58,7 +68,9 @@ git clone https://github.com/your-username/strava-wrapped.git
 cd strava-wrapped
 ```
 
-### Step 2: Create a Strava API Application
+### Step 2: Create a Strava API Application (Optional - for OAuth)
+
+> **Note**: Skip this step if you only want to use the file upload feature.
 
 1. Go to [Strava API Settings](https://www.strava.com/settings/api)
 2. Click **Create an App** (or use an existing one)
@@ -69,7 +81,7 @@ cd strava-wrapped
    - **Authorization Callback Domain**: `localhost`
 4. Save and note down your **Client ID** and **Client Secret**
 
-### Step 3: Configure Environment Variables
+### Step 3: Configure Environment Variables (Optional - for OAuth)
 
 Create a `.env` file in the `server` directory:
 
@@ -97,13 +109,22 @@ Install dependencies for both frontend and backend:
 # Install frontend dependencies
 npm install
 
-# Install backend dependencies
+# Install backend dependencies (only needed for OAuth)
 cd server
 npm install
 cd ..
 ```
 
 ### Step 5: Start the Application
+
+**For File Upload Only (No Backend Required)**
+
+```bash
+# Just start the frontend
+npm run dev
+```
+
+**For OAuth + File Upload (Full Features)**
 
 You need to run both the backend server and frontend development server:
 
@@ -135,7 +156,26 @@ Open your browser and navigate to:
 http://localhost:5173
 ```
 
-Click **Connect with Strava** to authenticate and view your wrapped!
+Click **Connect with Strava** to authenticate, or **Upload Strava Export** to use your downloaded data archive!
+
+## 📁 Using File Upload (Offline Mode)
+
+If you prefer not to use OAuth or want complete privacy, you can upload your Strava data export:
+
+### How to Get Your Strava Export
+
+1. Go to [strava.com](https://www.strava.com) → **Settings** → **My Account**
+2. Scroll down and click **"Download or Delete Your Account"**
+3. Click **"Request Your Archive"**
+4. Wait for an email with the download link (may take a few hours)
+5. Download and upload the ZIP file to the app
+
+### Supported Data
+
+The file upload feature parses:
+- **activities.csv** — Activity metadata (name, type, date, stats)
+- **FIT files** — GPS routes and detailed activity data
+- **GPX files** — GPS routes (if available)
 
 ## 📁 Project Structure
 
@@ -144,10 +184,15 @@ strava-wrapped/
 ├── src/                    # Frontend source code
 │   ├── components/         # React components
 │   │   ├── slides/         # Individual slide components
-│   │   └── ui/             # Reusable UI components
+│   │   ├── ui/             # Reusable UI components
+│   │   ├── FileUpload.tsx  # File upload component
+│   │   └── Landing.tsx     # Landing page with auth options
 │   ├── context/            # React context (Auth)
 │   ├── hooks/              # Custom React hooks
 │   ├── services/           # API services & data processing
+│   │   ├── stravaApi.ts    # Strava API service
+│   │   ├── stravaExportParser.ts  # ZIP file parser
+│   │   └── dataProcessing.ts      # Data transformation
 │   └── types/              # TypeScript type definitions
 ├── server/                 # Backend Express server
 │   ├── index.js            # Server entry point
@@ -174,10 +219,11 @@ The project includes Cloudflare Pages functions in the `functions/` directory fo
 ## 🔒 Privacy
 
 Your data stays private:
-- The app only reads your activity data via Strava's API
+- The app only reads your activity data via Strava's API or your uploaded export
 - No data is stored on any external server
 - All processing happens in your browser
 - Tokens are stored locally and can be cleared anytime
+- **File upload mode**: Data never leaves your device
 
 ## 🐛 Troubleshooting
 
@@ -199,6 +245,15 @@ Your data stays private:
 - Make sure you have activities recorded in the selected year
 - Check that your Strava account has public or authorized activities
 
+**File upload not working**
+- Ensure you're uploading the original ZIP file from Strava (don't extract it)
+- The ZIP must contain `activities.csv` or activity files in the `activities/` folder
+- Check browser console for detailed error messages
+
+**Map not showing routes**
+- Some activities may not have GPS data
+- FIT files with GPS data will show routes on the heatmap
+
 ## 📄 License
 
 MIT License - feel free to use this project for personal or commercial purposes.
@@ -207,3 +262,5 @@ MIT License - feel free to use this project for personal or commercial purposes.
 
 - [Strava API](https://developers.strava.com/) for providing activity data
 - Inspired by [Spotify Wrapped](https://www.spotify.com/wrapped/)
+- [Leaflet](https://leafletjs.com/) for map visualization
+- [Framer Motion](https://www.framer.com/motion/) for smooth animations

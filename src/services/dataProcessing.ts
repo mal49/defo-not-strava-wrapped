@@ -113,7 +113,7 @@ export function processActivities(activities: StravaActivity[]): WrappedStats {
 }
 
 function processRoutes(activities: StravaActivity[]): RouteData[] {
-  // Filter activities that have polyline data and sort by distance
+  // Filter activities that have polyline data and sort by distance (longest first)
   return activities
     .filter(a => a.map?.summary_polyline && a.map.summary_polyline.length > 0)
     .sort((a, b) => b.distance - a.distance)
