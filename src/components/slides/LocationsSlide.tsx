@@ -66,12 +66,6 @@ export function LocationsSlide({ routes }: LocationsSlideProps) {
     return [0, 0] as [number, number];
   }, [decodedRoutes]);
 
-  // Total stats
-  const totalDistance = useMemo(() => 
-    routes.reduce((sum, r) => sum + r.distance, 0),
-    [routes]
-  );
-
   useEffect(() => {
     const timer = setTimeout(() => setMapReady(true), 100);
     return () => clearTimeout(timer);

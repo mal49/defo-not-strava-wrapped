@@ -296,7 +296,7 @@ export function MonthlyDistributionSlide({ distribution }: MonthlyDistributionSl
                   Slowest
                 </p>
                 <p className="text-white font-bold text-lg">
-                  {leastActiveMonth[0] !== 'N/A' ? leastActiveMonth[0].substring(0, 3) : '—'}
+                  {leastActiveMonth[0] !== 'N/A' ? String(leastActiveMonth[0]).substring(0, 3) : '—'}
                 </p>
               </motion.div>
             </div>
